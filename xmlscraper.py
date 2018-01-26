@@ -1,27 +1,27 @@
 import urllib.request
+from imdbpie import Imdb
 from bs4 import BeautifulSoup
 from xml.dom import minidom
 
+imdb = Imdb()
 url = "http://www.xmltv.co.uk/feed/7147"
 request = urllib.request.Request(url)
 response = urllib.request.urlopen(request)
 xml = response.read().decode('utf-8')
 
 beauty = BeautifulSoup(xml)
-mydoc = minidom.parse(beauty)
-items = mydoc.getElementsByTagName('title')
-print(items)
-
 data = []
 
 i=0
-for title in beauty.find_all('title'):
-    for desc in beauty.find_all('desc'):
-        data.append([title, desc])
-        i +=1
-        print(i)
-        if(i == 10):
-            for i in range(len(data)):
-                print(data[i])
-            quit()
-        
+titles = beauty.find_all('title')
+descs = beauty.find_all('desc')
+channels = beauty.find_all('channel')
+print(channels[0].get_text())
+print(channels[1].get_text())
+for i in range(len(titles)):
+    data.append([titles[i].get_text(), descs[i].get_text(), channels[i].get_text().replace("\n", "")])
+    print(data[i])
+    if(i==10):
+        print(data)
+        quit()
+print(data)
